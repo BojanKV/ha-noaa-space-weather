@@ -1,9 +1,10 @@
+import gc
 import logging
 import os
 import pickle
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 import numpy as np
 import paho.mqtt.client as mqtt
@@ -69,17 +70,26 @@ def main():
             data = redis.get('tecmap_data')
         ionex_data = pickle.loads(data)
 
-        utc_hr = datetime.utcnow().hour
+        utc_hr = datetime.now(timezone.utc).hour
         logging.info(f'Using hour {utc_hr}')
 
         avg_tec = None
         for tecmap, epoch in ionex_data:
             if epoch.hour == utc_hr:
-                avg_tec = np.mean(plot_tec_map(tecmap, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])[0])
+                tecmap_ranged, _ = plot_tec_map(tecmap, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])
+                avg_tec = np.mean(tecmap_ranged)
                 logging.info(f'Data timestamp: {epoch.isoformat()}')
                 break
         latest = round(avg_tec, 1)
         publish('vtec', latest)
+
+        del data
+        del ionex_data
+        del tecmap_ranged
+        del avg_tec
+        del latest
+        gc.collect()
+
         time.sleep(60)
 
 
