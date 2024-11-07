@@ -38,7 +38,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         SpaceWeatherPredictionSensor(session, 'S', 'Prob', '3', '2day'),
         SpaceWeatherPredictionSensor(session, 'G', 'Scale', '3', '2day'),
 
-        PlanetaryKIndexSensor(session)
+        PlanetaryKIndexSensor(session),
+
+        ProtonFlux10MEV(session),
+        ProtonFlux10MEVWarningThreshold(session),
     ], True)
 
 
@@ -69,15 +72,15 @@ class SpaceWeatherScaleSensor(Entity):
 
     @property
     def state(self):
-        return f'{self._scale_key}{self._data[self._scale_key]["Scale"]}'
+        return int(self._data[self._scale_key]["Scale"])
 
     @property
     def extra_state_attributes(self):
         if self._data:
             return {
-                'scale_int': int(self._data[self._scale_key]['Scale']),
                 'text': self._data[self._scale_key]['Text'],
-                'timestamp': datetime.fromisoformat(self._data["DateStamp"] + 'T' + self._data["TimeStamp"] + '+00:00').isoformat()
+                'timestamp': datetime.fromisoformat(self._data["DateStamp"] + 'T' + self._data["TimeStamp"] + '+00:00').isoformat(),
+                'state_class': 'measurement'
             }
         return None
 
@@ -115,13 +118,14 @@ class SpaceWeatherPredictionSensor(Entity):
 
     @property
     def state(self):
-        if self._pred_key == 'Scale':
-            return self._state
-        elif self._state is not None:
-            try:
-                return float(self._state)
-            except ValueError:
-                return None
+        if self._state:
+            if self._pred_key == 'Scale':
+                return int(self._state)
+            else:
+                try:
+                    return float(self._state)
+                except ValueError:
+                    return None
         return None
 
     @property
@@ -134,7 +138,8 @@ class SpaceWeatherPredictionSensor(Entity):
     def extra_state_attributes(self):
         if self._data:
             return {
-                'timestamp': datetime.fromisoformat(self._data["DateStamp"] + 'T' + self._data["TimeStamp"] + '+00:00').isoformat()
+                'timestamp': datetime.fromisoformat(self._data["DateStamp"] + 'T' + self._data["TimeStamp"] + '+00:00').isoformat(),
+                'state_class': 'measurement'
             }
         return None
 
@@ -199,6 +204,81 @@ class PlanetaryKIndexSensor(Entity):
                     data = await response.json()
                     self._data = data[-1]
                 else:
-                    _LOGGER.error(f'Error fetching data from {SCALES_URL}')
+                    _LOGGER.error(f'Error fetching data from planetary_k_index_1m.json')
         except aiohttp.ClientError as err:
-            _LOGGER.error(f'Error fetching data from {SCALES_URL}: {err}')
+            _LOGGER.error(f'Error fetching data from planetary_k_index_1m.json: {err}')
+
+
+class ProtonFlux10MEV(Entity):
+    """
+    https://www.swpc.noaa.gov/products/goes-proton-flux
+    """
+
+    def __init__(self, session):
+        self._session = session
+        self._name = 'Space Weather Proton Flux 10 MeV'
+        self._data = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unique_id(self):
+        return 'space_weather_proton_flux_10_mev'
+
+    @property
+    def state(self):
+        if self._data:
+            return round(float(self._data['flux']), 2)
+        return None
+
+    @property
+    def extra_state_attributes(self):
+        if self._data:
+            return {
+                'satellite': self._data['satellite'],
+                'timestamp': datetime.fromisoformat(self._data['time_tag']).isoformat(),
+                'state_class': 'measurement'
+            }
+        return None
+
+    @Throttle(SCAN_INTERVAL)
+    async def async_update(self):
+        try:
+            async with self._session.get('https://services.swpc.noaa.gov/json/goes/primary/integral-protons-1-day.json') as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self._data = {}
+                    for x in list(reversed(data)):
+                        if x['energy'] == '>=10 MeV':
+                            self._data = x
+                            break
+                else:
+                    _LOGGER.error(f'Error fetching data from integral-protons-1-day.json')
+        except aiohttp.ClientError as err:
+            _LOGGER.error(f'Error fetching data from integral-protons-1-day.json: {err}')
+
+
+class ProtonFlux10MEVWarningThreshold(Entity):
+    def __init__(self, session):
+        self._session = session
+        self._name = 'Space Weather Proton Flux 10 MeV Warning Threshold'
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unique_id(self):
+        return 'space_weather_proton_flux_10_mev_warning_threshold'
+
+    @property
+    def state(self):
+        return 10
+
+    @property
+    def extra_state_attributes(self):
+        return {
+            'state_class': 'measurement'
+        }
