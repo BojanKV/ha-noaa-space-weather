@@ -9,7 +9,6 @@ EnvironmentFile=/etc/secrets/space-weather
 ExecStart=/srv/ha-noaa-space-weather/venv/bin/python /srv/ha-noaa-space-weather/feeder/mqtt.py
 SyslogIdentifier=space-weather-mqtt
 Restart=on-failure
-RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

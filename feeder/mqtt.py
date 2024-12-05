@@ -1,13 +1,12 @@
 import gc
 import logging
+import numpy as np
 import os
+import paho.mqtt.client as mqtt
 import pickle
 import sys
 import time
 from datetime import datetime, timezone
-
-import numpy as np
-import paho.mqtt.client as mqtt
 from dateutil.parser import parse
 from redis import Redis
 
@@ -56,32 +55,21 @@ def publish(topic: str, msg):
 
 def main():
     redis = Redis(host='localhost', port=6379, db=0)
-
-    while True:
+    data = redis.get('glotec')
+    while data is None:
+        logging.warning('Redis has not been populated yet. Is cache.py running? Sleeping 10s...')
+        time.sleep(10)
         data = redis.get('glotec')
-        while data is None:
-            logging.warning('Redis has not been populated yet. Is cache.py running? Sleeping 10s...')
-            time.sleep(10)
-            data = redis.get('glotec')
-        geojson = pickle.loads(data)
+    geojson = pickle.loads(data)
 
-        utc_hr = datetime.now(timezone.utc).hour
-        logging.info(f'Using hour {utc_hr}')
+    utc_hr = datetime.now(timezone.utc).hour
+    logging.info(f'Using hour {utc_hr}')
 
-        glotec_map_ranged, _ = plot_glotec_map(geojson, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])
-        avg_tec = np.mean(glotec_map_ranged)
-        logging.info(f'Data timestamp: {parse(geojson["time_tag"]).isoformat()}')
-        latest = round(avg_tec, 1)
-        publish('glotec', latest)
-
-        del data
-        del geojson
-        del glotec_map_ranged
-        del avg_tec
-        del latest
-        gc.collect()
-
-        time.sleep(60)
+    glotec_map_ranged, _ = plot_glotec_map(geojson, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])
+    avg_tec = np.mean(glotec_map_ranged)
+    logging.info(f'Data timestamp: {parse(geojson["time_tag"]).isoformat()}')
+    latest = round(avg_tec, 1)
+    publish('glotec', latest)
 
 
 if __name__ == '__main__':

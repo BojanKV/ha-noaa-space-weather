@@ -8,8 +8,7 @@ User=homeassistant
 EnvironmentFile=/etc/secrets/space-weather
 ExecStart=/srv/ha-noaa-space-weather/venv/bin/python /srv/ha-noaa-space-weather/feeder/cache.py
 SyslogIdentifier=space-weather-cache
-Restart=on-failure
-RestartSec=5s
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
