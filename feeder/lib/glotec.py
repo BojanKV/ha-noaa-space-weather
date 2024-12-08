@@ -1,4 +1,6 @@
+import logging
 import time
+import traceback
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
@@ -12,13 +14,19 @@ from scipy.interpolate import griddata
 
 
 def get_latest_glotec():
-    r = requests.get('https://services.swpc.noaa.gov/experimental/products/glotec/geojson_2d_urt.json')
-    r.raise_for_status()
-    index_json = r.json()[-1]
-    data_url = 'https://services.swpc.noaa.gov' + index_json['url']
-    r2 = requests.get(data_url)
-    r2.raise_for_status()
-    return r2.json()
+    try:
+        r = requests.get('https://services.swpc.noaa.gov/experimental/products/glotec/geojson_2d_urt.json')
+        r.raise_for_status()
+        index_json = r.json()[-1]
+        data_url = 'https://services.swpc.noaa.gov' + index_json['url']
+        r2 = requests.get(data_url)
+        r2.raise_for_status()
+        return r2.json()
+    except:
+        logging.basicConfig()
+        logger = logging.getLogger(__name__)
+        logger.error(traceback.format_exc())
+        return None
 
 
 def plot_glotec_map(data: dict, lon_range: list, lat_range: list):

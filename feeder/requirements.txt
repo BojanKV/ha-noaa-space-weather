@@ -1,6 +1,4 @@
 paho-mqtt==1.5.0
-chromedriver-autoinstaller==0.6.4
-selenium==4.23.1
 requests==2.32.3
 matplotlib==3.9.2
 cartopy==0.23.0
@@ -9,7 +7,6 @@ redis==5.0.8
 async-timeout==4.0.3
 Pillow
 flask==3.0.3
-schedule==1.2.2
 gunicorn==23.0.0
 python-dateutil==2.9.0.post0
 scipy==1.14.1

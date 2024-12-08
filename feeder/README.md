@@ -5,10 +5,9 @@ EarthData which is done through Selenium and the Chrome browser.
 
 ## Install
 
-1. Create an account at <https://urs.earthdata.nasa.gov>
-2. `pip install -r requirements.txt`
-3. `sudo apt-get install redis-server`
-4. `sudo systemctl enable --now redis-server`
+1. `pip install -r requirements.txt`
+2. `sudo apt-get install redis-server`
+3. `sudo systemctl enable --now redis-server`
 
 ## Run
 
