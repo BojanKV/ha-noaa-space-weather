@@ -2,8 +2,7 @@
 Description=Space Weather MQTT timer
 
 [Timer]
-OnCalendar=hourly
-Persistent=true
+OnCalendar=*:0/1
 Unit=space-weather-mqtt.service
 
 [Install]
