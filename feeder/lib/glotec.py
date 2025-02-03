@@ -14,10 +14,12 @@ from scipy.interpolate import griddata
 
 
 def get_latest_glotec():
+    raw_data = {}  # to be able to print data on error
     try:
         r = requests.get('https://services.swpc.noaa.gov/experimental/products/glotec/geojson_2d_urt.json')
         r.raise_for_status()
-        index_json = r.json()[-1]
+        raw_data = r.json()
+        index_json = raw_data[-1]
         data_url = 'https://services.swpc.noaa.gov' + index_json['url']
         r2 = requests.get(data_url)
         r2.raise_for_status()
@@ -26,6 +28,7 @@ def get_latest_glotec():
         logging.basicConfig()
         logger = logging.getLogger(__name__)
         logger.error(traceback.format_exc())
+        logger.error(raw_data)
         return None
 
 
