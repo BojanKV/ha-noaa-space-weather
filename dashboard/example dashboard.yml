@@ -1,0 +1,130 @@
+views:
+  - title: Space Weather
+    path: space-weather
+    icon: mdi:space-station
+    cards: [ ]
+    badges: [ ]
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: GloTEC
+            heading_style: title
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.space_weather_glotec
+            color_thresholds:
+              - value: 0
+                color: '#030586'
+              - value: 10
+                color: '#0506e6'
+              - value: 20
+                color: '#004efd'
+              - value: 30
+                color: '#00b5fd'
+              - value: 40
+                color: '#14fde7'
+              - value: 50
+                color: '#6ffd8d'
+              - value: 60
+                color: '#e9fc13'
+              - value: 70
+                color: '#fbaf03'
+              - value: 80
+                color: '#fb4801'
+              - value: 90
+                color: '#da0302'
+              - value: 100
+                color: '#750305'
+          - type: custom:collapsable-cards
+            title: History
+            cards:
+              - chart_type: line
+                title: GloTEC History
+                period: day
+                type: statistics-graph
+                entities:
+                  - sensor.space_weather_glotec
+                stat_types:
+                  - mean
+                  - max
+                days_to_show: 14
+          - show_state: false
+            show_name: false
+            camera_view: auto
+            type: picture-entity
+            entity: camera.glotec_100asm_urt
+            hold_action:
+              action: none
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Scales
+          - type: custom:space-weather-current
+          - type: custom:space-weather-prediction
+          - type: custom:space-weather-24hr-max
+      - type: grid
+        cards:
+          - type: heading
+            heading: Planetary K-Index
+            heading_style: title
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.space_weather_planetary_k_index
+            color_thresholds:
+              - value: 0
+                color: '#92D050'
+              - value: 5
+                color: '#F6EB14'
+              - value: 6
+                color: '#FFC800'
+              - value: 7
+                color: '#FF9600'
+              - value: 8
+                color: '#FF0000'
+              - value: 9
+                color: '#C80000'
+          - type: custom:collapsable-cards
+            title: History
+            cards:
+              - chart_type: line
+                title: Planetary K Index History
+                period: day
+                type: statistics-graph
+                entities:
+                  - sensor.space_weather_planetary_k_index
+                days_to_show: 14
+                stat_types:
+                  - mean
+                  - max
+      - type: grid
+        cards:
+          - type: heading
+            heading: GOES Proton Flux
+            heading_style: title
+          - chart_type: line
+            period: hour
+            type: statistics-graph
+            entities:
+              - sensor.space_weather_proton_flux_10_mev
+              - sensor.space_weather_proton_flux_10_mev_warning_threshold
+            stat_types:
+              - mean
+            logarithmic_scale: true
+            days_to_show: 14
+      - type: grid
+        cards:
+          - type: heading
+            heading: Aurora
+            heading_style: title
+          - show_state: false
+            show_name: false
+            camera_view: auto
+            type: picture-entity
+            entity: camera.tonights_aurora_static_viewline_forecast
+            hold_action:
+              action: none
+    max_columns: 3
+    dense_section_placement: false

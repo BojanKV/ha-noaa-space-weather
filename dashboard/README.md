@@ -10,49 +10,21 @@
 ## Use
 To add these custom cards, create a card of the "Manual" type.
 
-```
+```yaml
 type: space-weather-current
+```
+```yaml
 type: space-weather-prediction-1day
+```
+```yaml
 type: space-weather-24hr-max
 ```
 
-## VTEC Graph
-
-In the example dashboard seen in `dashboard.png`, the VTEC graph uses components from [mini-graph-card](https://github.com/kalkih/mini-graph-card). Use the following definition:
-
-```yaml
-type: custom:mini-graph-card
-entities:
-  - entity: sensor.space_weather_vtec
-color_thresholds:
-  - value: 0
-    color: '#030586'
-  - value: 10
-    color: '#0506e6'
-  - value: 20
-    color: '#004efd'
-  - value: 30
-    color: '#00b5fd'
-  - value: 40
-    color: '#14fde7'
-  - value: 50
-    color: '#6ffd8d'
-  - value: 60
-    color: '#e9fc13'
-  - value: 70
-    color: '#fbaf03'
-  - value: 80
-    color: '#fb4801'
-  - value: 90
-    color: '#da0302'
-  - value: 100
-    color: '#750305'
-```
-## Global VTEC Map
+## GloTEC Map
 
 1. Enable the [Generic Camera](https://www.home-assistant.io/integrations/generic/) integration.
-2. Set the `Still Image URL` to `http://[server IP]:5000/global`
-3. Set the `Frame Rate (Hz)` to `0.0016666666666667` (sets it to a 10 minute refresh rate).
+2. Set the `Still Image URL` to your chosen source (see below).
+3. Set the `Frame Rate (Hz)` to `0.0016666666666667` (10 minute refresh rate).
 4. Create this card on the dashboard:
     ```yaml
     type: picture-entity
@@ -61,3 +33,7 @@ color_thresholds:
     show_name: false
     camera_view: auto
     ```
+
+**NOAA Generated:** `https://services.swpc.noaa.gov/experimental/images/animations/glotec/100asm_urt/latest.png`
+
+**Locally Generated:** `http://[server IP]:5000/global`
