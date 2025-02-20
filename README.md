@@ -16,4 +16,4 @@ instructions.
 
 <br><br>
 
-![example dashboard](dashboard/example dashboard.jpg)
+![example dashboard](dashboard/example-dashboard.jpg)
