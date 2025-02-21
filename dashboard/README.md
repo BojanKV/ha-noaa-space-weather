@@ -34,6 +34,6 @@ type: space-weather-24hr-max
     camera_view: auto
     ```
 
-**NOAA Generated:** `https://services.swpc.noaa.gov/experimental/images/animations/glotec/100asm_urt/latest.png`
+**NOAA Generated:** `https://services.swpc.noaa.gov/images/animations/glotec/100asm_urt/latest.png`
 
 **Locally Generated:** `http://[server IP]:5000/global`

@@ -14,6 +14,10 @@ minutes. SWPC publishes new data every 1 minute.
 Individual components have their own README files. See `custom-component/`, `dashboard/`, and `feeder/` for install
 instructions.
 
+GloTEC:
+- <https://www.swpc.noaa.gov/products/glotec>
+- <https://www.gps.gov/cgsic/meetings/2023/fang.pdf>
+
 <br><br>
 
 ![example dashboard](dashboard/example-dashboard.jpg)
