@@ -1,12 +1,12 @@
-import gc
 import logging
-import numpy as np
 import os
-import paho.mqtt.client as mqtt
 import pickle
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+import numpy as np
+import paho.mqtt.client as mqtt
 from dateutil.parser import parse
 from redis import Redis
 
@@ -62,13 +62,19 @@ def main():
         data = redis.get('glotec')
     geojson = pickle.loads(data)
 
-    utc_hr = datetime.now(timezone.utc).hour
-    logging.info(f'Using hour {utc_hr}')
+    data_timestamp = parse(geojson['time_tag'])
+    now = datetime.now(timezone.utc)
 
-    glotec_map_ranged, _ = plot_glotec_map(geojson, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])
-    avg_tec = np.mean(glotec_map_ranged)
-    logging.info(f'Data timestamp: {parse(geojson["time_tag"]).isoformat()}')
-    latest = round(avg_tec, 1)
+    if now - data_timestamp >= timedelta(hours=1):
+        logging.warning(f'Data is older than 1 hour! Now: {now}. Data: {data_timestamp}')
+        latest = -1
+    else:
+        utc_hr = datetime.now(timezone.utc).hour
+        logging.info(f'Using hour {utc_hr}')
+        glotec_map_ranged, _ = plot_glotec_map(geojson, [float(LON_RANGE_MIN), float(LON_RANGE_MAX)], [float(LAT_RANGE_MIN), float(LAT_RANGE_MAX)])
+        avg_tec = np.mean(glotec_map_ranged)
+        logging.info(f'Data timestamp: {parse(geojson["time_tag"]).isoformat()}')
+        latest = round(avg_tec, 1)
     publish('glotec', latest)
 
 

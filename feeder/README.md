@@ -1,7 +1,7 @@
 This is an external service that generates GloTEC data and feeds it to Home Assistant. Originally, fetching the data
 required a login to NASA's EarthData server which was only possible through Selenium and the Chrome browser. NASA has
 transitioned away from VTEC to GloTEC and the data is now an easy to use JSON API. This feeder service should be
-moved to a custom component but it works well enough for me like this.
+moved to a custom component someday but it works well enough for me like this.
 
 The feeder service downloads the GloTEC data hourly and plots it on a map.
 
@@ -28,7 +28,7 @@ MQTT_BROKER_HOST="<Home Assistant IP>" MQTT_BROKER_PORT=1883 MQTT_USERNAME="user
 python3 mqtt.py
 ```
 
-Example systemd service files are provided.
+Example systemd service files are provided. Your environment variables should go in `/etc/secrets/space-weather`
 
 ### Home Assistant MQTT Config
 

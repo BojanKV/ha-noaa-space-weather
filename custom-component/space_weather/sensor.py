@@ -158,10 +158,6 @@ class SpaceWeatherPredictionSensor(Entity):
 
 
 class PlanetaryKIndexSensor(Entity):
-    """
-    Temporary sensor until https://github.com/tcarwash/home-assistant_noaa-space-weather gets their shit together
-    """
-
     def __init__(self, session):
         self._session = session
         self._name = 'Space Weather Planetary K-Index'
