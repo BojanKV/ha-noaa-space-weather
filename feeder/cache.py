@@ -14,12 +14,12 @@ def main():
     while True:
         logging.info('Fetching latest GLOTEC data')
         geojson = get_latest_glotec()
-        redis.set('glotec', pickle.dumps(geojson))
-        logging.info('Scrape complete')
         if geojson is None:
             logging.info('Sleeping for 120s due to error...')
             time.sleep(120)
         else:
+            logging.info('Scrape complete')
+            redis.set('glotec', pickle.dumps(geojson))
             logging.info('Sleeping for 30 minutes...')
             time.sleep(1800)  # 30 minutes
 
