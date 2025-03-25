@@ -1,12 +1,11 @@
 import logging
+import numpy as np
 import os
+import paho.mqtt.client as mqtt
 import pickle
 import sys
 import time
 from datetime import datetime, timezone, timedelta
-
-import numpy as np
-import paho.mqtt.client as mqtt
 from dateutil.parser import parse
 from redis import Redis
 
@@ -55,12 +54,19 @@ def publish(topic: str, msg):
 
 def main():
     redis = Redis(host='localhost', port=6379, db=0)
-    data = redis.get('glotec')
-    while data is None:
-        logging.warning('Redis has not been populated yet. Is cache.py running? Sleeping 10s...')
-        time.sleep(10)
+    geojson = None
+    while True:
         data = redis.get('glotec')
-    geojson = pickle.loads(data)
+        if data is None:
+            logging.warning('Redis has not been populated yet. Is cache.py running? Sleeping 10s...')
+            time.sleep(10)
+            continue
+        geojson = pickle.loads(data)
+        if geojson is None:
+            logging.warning('Data from Redis was empty. Sleeping 10s...')
+            time.sleep(10)
+            continue
+        break
 
     data_timestamp = parse(geojson['time_tag'])
     now = datetime.now(timezone.utc)
