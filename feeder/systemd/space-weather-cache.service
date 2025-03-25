@@ -9,6 +9,7 @@ EnvironmentFile=/etc/secrets/space-weather
 ExecStart=/srv/ha-noaa-space-weather/venv/bin/python /srv/ha-noaa-space-weather/feeder/cache.py
 SyslogIdentifier=space-weather-cache
 Restart=always
+RestartSec=60s
 
 [Install]
 WantedBy=multi-user.target
