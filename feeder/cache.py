@@ -1,6 +1,7 @@
 import logging
 import pickle
 import time
+
 from redis import Redis
 
 from lib.glotec import get_latest_glotec
@@ -15,7 +16,12 @@ def main():
         geojson = get_latest_glotec()
         redis.set('glotec', pickle.dumps(geojson))
         logging.info('Scrape complete')
-        time.sleep(1800)  # 30 minutes
+        if geojson is None:
+            logging.info('Sleeping for 120s due to error...')
+            time.sleep(120)
+        else:
+            logging.info('Sleeping for 30 minutes...')
+            time.sleep(1800)  # 30 minutes
 
 
 if __name__ == '__main__':
