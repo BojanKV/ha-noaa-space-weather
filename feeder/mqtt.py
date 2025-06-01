@@ -72,8 +72,8 @@ def main():
     now = datetime.now(timezone.utc)
 
     if now - data_timestamp >= timedelta(hours=1):
-        logging.warning(f'Data is older than 1 hour! Now: {now}. Data: {data_timestamp}')
-        latest = -1
+        logging.warning(f'Data is older than 1 hour! Not sending anything. Now: {now}. Data: {data_timestamp}')
+        return
     else:
         utc_hr = datetime.now(timezone.utc).hour
         logging.info(f'Using hour {utc_hr}')
