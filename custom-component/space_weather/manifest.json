@@ -6,6 +6,6 @@
   "domain": "space_weather",
   "iot_class": "cloud_polling",
   "name": "Space Weather",
-  "requirements": [],
+  "requirements": ["pillow", "numpy"],
   "version": "1.0.0"
 }

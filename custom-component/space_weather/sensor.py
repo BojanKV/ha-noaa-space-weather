@@ -1,7 +1,10 @@
+import io
 import logging
 from datetime import timedelta, datetime
 
 import aiohttp
+import numpy as np
+from PIL import Image
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
@@ -42,6 +45,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         ProtonFlux10MEV(session),
         ProtonFlux10MEVWarningThreshold(session),
+
+        AuroraForecastSensor(session),
     ], True)
 
 
@@ -278,3 +283,71 @@ class ProtonFlux10MEVWarningThreshold(Entity):
         return {
             'state_class': 'measurement'
         }
+
+
+class AuroraForecastSensor(Entity):
+    def __init__(self, session):
+        self._session = session
+        self._name = 'Space Weather Aurora Forecast Coverage'
+        self._percentage = None
+        self._last_update = None
+        self._url = 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unique_id(self):
+        return 'space_weather_aurora_forecast_coverage'
+
+    @property
+    def state(self):
+        return self._percentage
+
+    @property
+    def unit_of_measurement(self):
+        return '%'
+
+    @property
+    def extra_state_attributes(self):
+        if self._last_update:
+            return {
+                'timestamp': self._last_update.isoformat(),
+                'state_class': 'measurement',
+                'image_url': self._url
+            }
+        return None
+
+    @Throttle(SCAN_INTERVAL)
+    async def async_update(self):
+        try:
+            async with self._session.get(self._url) as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    image = Image.open(io.BytesIO(image_data))
+                    if image.mode != 'RGB':
+                        image = image.convert('RGB')
+
+                    # Convert to numpy array
+                    img_array = np.array(image)
+                    target_color = np.array([224, 14, 1])  # #e00e01 in RGB
+
+                    # Create mask for pixels matching the target color
+                    # Allow small tolerance for compression artifacts
+                    tolerance = 5
+                    mask = np.all(np.abs(img_array - target_color) <= tolerance, axis=2)
+
+                    # Calculate percentage
+                    total_pixels = img_array.shape[0] * img_array.shape[1]
+                    matching_pixels = np.sum(mask)
+                    self._percentage = round((matching_pixels / total_pixels) * 100, 1)
+
+                    self._last_update = datetime.utcnow()
+
+                else:
+                    _LOGGER.error(f'Error fetching aurora forecast image: HTTP {response.status}')
+        except aiohttp.ClientError as err:
+            _LOGGER.error(f'Error fetching aurora forecast image: {err}')
+        except Exception as err:
+            _LOGGER.error(f'Error processing aurora forecast image: {err}')
