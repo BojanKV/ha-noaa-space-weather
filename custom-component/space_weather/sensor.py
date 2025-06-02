@@ -341,7 +341,7 @@ class AuroraForecastSensor(Entity):
                     # Calculate percentage
                     total_pixels = img_array.shape[0] * img_array.shape[1]
                     matching_pixels = np.sum(mask)
-                    self._percentage = round((matching_pixels / total_pixels) * 100, 1)
+                    self._percentage = int((matching_pixels / total_pixels) * 100)
 
                     self._last_update = datetime.utcnow()
 
