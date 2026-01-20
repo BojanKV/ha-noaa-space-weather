@@ -12,7 +12,7 @@ echo "========================================="
 echo ""
 
 # Check if running in the repository directory
-if [ ! -d "custom-component/space_weather" ]; then
+if [ ! -f "manifest.json" ]; then
     echo "Error: Please run this script from the repository root directory"
     exit 1
 fi
@@ -37,9 +37,13 @@ if [ ! -d "$CUSTOM_COMPONENTS_DIR" ]; then
     mkdir -p "$CUSTOM_COMPONENTS_DIR"
 fi
 
-# Copy the component
+# Create space_weather directory
+SPACE_WEATHER_DIR="$CUSTOM_COMPONENTS_DIR/space_weather"
+mkdir -p "$SPACE_WEATHER_DIR"
+
+# Copy the component files
 echo "Copying space_weather component..."
-cp -r custom-component/space_weather "$CUSTOM_COMPONENTS_DIR/"
+cp __init__.py const.py manifest.json sensor.py "$SPACE_WEATHER_DIR/"
 
 echo ""
 echo "✓ Installation complete!"
