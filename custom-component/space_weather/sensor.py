@@ -56,7 +56,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     lon_min = config.get('lon_range_min')
     lon_max = config.get('lon_range_max')
     
-    if lat_min is not None and lat_max is not None and lon_min is not None and lon_max is not None:
+    if all(param is not None for param in [lat_min, lat_max, lon_min, lon_max]):
         entities.append(GloTECSensor(session, lat_min, lat_max, lon_min, lon_max))
         _LOGGER.info(f'GloTEC sensor enabled with lat range [{lat_min}, {lat_max}] and lon range [{lon_min}, {lon_max}]')
     else:
@@ -383,6 +383,16 @@ class GloTECSensor(Entity):
         self._lon_max = float(lon_max)
         self._state = None
         self._last_update = None
+        
+        # Validate coordinate ranges
+        if self._lat_min >= self._lat_max:
+            raise ValueError(f'lat_range_min ({self._lat_min}) must be less than lat_range_max ({self._lat_max})')
+        if self._lon_min >= self._lon_max:
+            raise ValueError(f'lon_range_min ({self._lon_min}) must be less than lon_range_max ({self._lon_max})')
+        if not (-90 <= self._lat_min <= 90) or not (-90 <= self._lat_max <= 90):
+            raise ValueError(f'Latitude values must be between -90 and 90')
+        if not (-180 <= self._lon_min <= 180) or not (-180 <= self._lon_max <= 180):
+            raise ValueError(f'Longitude values must be between -180 and 180')
 
     @property
     def name(self):
@@ -443,11 +453,17 @@ class GloTECSensor(Entity):
                                     tec_values.append(tec)
                             
                             if tec_values:
-                                # Calculate average TEC for the region
-                                avg_tec = np.mean(tec_values)
-                                self._state = round(avg_tec, 1)
-                                self._last_update = datetime.utcnow()
-                                _LOGGER.debug(f'GloTEC updated: {self._state} (from {len(tec_values)} points)')
+                                # Filter out any NaN or invalid values
+                                valid_tec_values = [v for v in tec_values if not np.isnan(v) and v >= 0]
+                                
+                                if valid_tec_values:
+                                    # Calculate average TEC for the region
+                                    avg_tec = np.mean(valid_tec_values)
+                                    self._state = round(avg_tec, 1)
+                                    self._last_update = datetime.utcnow()
+                                    _LOGGER.debug(f'GloTEC updated: {self._state} (from {len(valid_tec_values)} valid points out of {len(tec_values)} total)')
+                                else:
+                                    _LOGGER.warning(f'All GloTEC data points in region were invalid')
                             else:
                                 _LOGGER.warning(f'No GloTEC data points found in region lat[{self._lat_min}, {self._lat_max}], lon[{self._lon_min}, {self._lon_max}]')
                         else:
