@@ -1,0 +1,59 @@
+# Example Home Assistant configuration for NOAA Space Weather integration
+#
+# Copy the relevant section to your configuration.yaml file
+#
+
+# ========================================
+# OPTION 1: Basic Configuration
+# ========================================
+# This provides all sensors except GloTEC:
+# - Solar Weather Scales (R, S, G) - current and 24hr max
+# - Predictions (today, 1-day, 2-day)
+# - Planetary K-Index
+# - Proton Flux
+# - Aurora Forecast Coverage
+
+sensor:
+  - platform: space_weather
+
+# ========================================
+# OPTION 2: Full Configuration with GloTEC
+# ========================================
+# This enables all sensors including GloTEC for your region
+# Replace the lat/lon values with your area's boundaries
+
+sensor:
+  - platform: space_weather
+    # Geographic boundaries for GloTEC sensor
+    # Find coordinates using Google Maps or similar
+    lat_range_min: 25.0    # Southern boundary (e.g., 25° for southern USA)
+    lat_range_max: 50.0    # Northern boundary (e.g., 50° for northern USA)
+    lon_range_min: -125.0  # Western boundary (e.g., -125° for west coast USA)
+    lon_range_max: -65.0   # Eastern boundary (e.g., -65° for east coast USA)
+
+# ========================================
+# Example Regions
+# ========================================
+#
+# Continental USA:
+#   lat_range_min: 25.0
+#   lat_range_max: 50.0
+#   lon_range_min: -125.0
+#   lon_range_max: -65.0
+#
+# Europe:
+#   lat_range_min: 35.0
+#   lat_range_max: 70.0
+#   lon_range_min: -10.0
+#   lon_range_max: 40.0
+#
+# Australia:
+#   lat_range_min: -45.0
+#   lat_range_max: -10.0
+#   lon_range_min: 110.0
+#   lon_range_max: 155.0
+#
+# Your custom region:
+#   Use Google Maps or similar to find the lat/lon boundaries
+#   Latitude: North/South (-90 to 90)
+#   Longitude: East/West (-180 to 180)

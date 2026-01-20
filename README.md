@@ -8,6 +8,10 @@ Data is sourced from the NOAA Space Weather Prediction Center.
 
 ![example dashboard](dashboard/example-dashboard.jpg)
 
+## 🚀 New to Home Assistant or this integration?
+
+Check out the **[Quick Start Guide](QUICKSTART.md)** for step-by-step beginner-friendly instructions!
+
 ## ✨ Simplified Installation
 
 This component has been streamlined for easy deployment. **No external services, MQTT, or Redis required!**
