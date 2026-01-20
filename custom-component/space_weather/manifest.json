@@ -2,10 +2,10 @@
   "codeowners": ["@cyberes"],
   "config_flow": false,
   "dependencies": [],
-  "documentation": "https://git.evulid.cc/cyberes/ha-noaa-space-weather-sensor",
+  "documentation": "https://github.com/BojanKV/ha-noaa-space-weather",
   "domain": "space_weather",
   "iot_class": "cloud_polling",
-  "name": "Space Weather",
+  "name": "NOAA Space Weather",
   "requirements": ["pillow", "numpy"],
-  "version": "1.0.0"
+  "version": "2.0.0"
 }
