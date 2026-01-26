@@ -29,11 +29,10 @@ This component has been streamlined for easy deployment. **No external services,
 
 ### Option 2: Manual Installation
 
-1. Create a `space_weather` folder in your Home Assistant `config/custom_components` directory
-   - Path should be: `config/custom_components/space_weather/`
-2. Copy all integration files (`__init__.py`, `const.py`, `manifest.json`, `sensor.py`) from the repository root to that folder
-3. Restart Home Assistant
-4. Add to your `configuration.yaml` (see Configuration section below)
+1. Copy the `custom_components/space_weather` folder from this repository to your Home Assistant `config/custom_components` directory
+   - Final path should be: `config/custom_components/space_weather/`
+2. Restart Home Assistant
+3. Add to your `configuration.yaml` (see Configuration section below)
 
 ## ⚙️ Configuration
 
