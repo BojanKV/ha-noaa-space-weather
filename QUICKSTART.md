@@ -221,8 +221,8 @@ sensor:
 7. ✅ Look in logs (Settings → System → Logs) for "space_weather"
 
 **Expected log message after restart:**
-- "GloTEC sensor not configured" (if no lat/lon in config)
-- OR "GloTEC sensor enabled" (if lat/lon configured)
+- `GloTEC sensor not configured` (if no lat/lon in config)
+- OR `GloTEC sensor enabled` (if lat/lon configured)
 
 This confirms the integration loaded. If you don't see this, the configuration isn't being read.
 

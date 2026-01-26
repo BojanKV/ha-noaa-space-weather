@@ -248,7 +248,7 @@ If you search for `space_weather` and only see one "update" entity (not 18+ sens
    - Required files: `__init__.py`, `sensor.py`, `manifest.json`
 
 **To verify it's working:**
-- After restart, check logs for: `"GloTEC sensor not configured"` or `"GloTEC sensor enabled"`
+- After restart, check logs for: `GloTEC sensor not configured` or `GloTEC sensor enabled`
 - This confirms the integration is loading
 - Then wait 1-2 minutes for sensors to fetch initial data
 - Search Developer Tools → States for `space_weather` (you should see 18+ entities)
