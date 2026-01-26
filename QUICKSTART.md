@@ -140,12 +140,18 @@ See the complete example in `dashboard/example-dashboard.yml`
 **Step 2:** Copy files
 1. Find your Home Assistant configuration folder (usually `/config/`)
 2. Create a folder called `custom_components` if it doesn't exist
-3. Copy the entire `custom_components/space_weather` folder from the repository to your Home Assistant `config/custom_components/` directory
-   - Final path: `config/custom_components/space_weather/`
+3. Copy the entire `custom_components/space_weather` folder from the extracted repository to your Home Assistant `config/custom_components/` directory
+   - **Important**: Copy the folder itself, not just the files inside
+   - Final structure: `config/custom_components/space_weather/`
+   - Inside you should see: `__init__.py`, `sensor.py`, `manifest.json`, `const.py`
 
-**Step 3:** Configure it (same as HACS method above)
+**Step 3:** Verify files are in place
+- Check that `config/custom_components/space_weather/__init__.py` exists
+- If this file doesn't exist at that exact path, the integration won't load
 
-**Step 4:** Restart Home Assistant (same as HACS method above)
+**Step 4:** Configure it (same as HACS method above)
+
+**Step 5:** Restart Home Assistant (same as HACS method above)
 
 ### 🚀 Method 3: Quick Install Script (Linux/Mac)
 
@@ -183,6 +189,46 @@ sensor:
 **Example regions** are in `configuration.example.yaml`
 
 ## Troubleshooting
+
+### "Platform error: Integration 'space_weather' not found"
+
+**This error appears in logs when Home Assistant can't find the integration files.**
+
+❌ **Error you're seeing:**
+```
+Platform error: sensor - Integration 'space_weather' not found
+```
+
+**This means the files aren't in the right place.** Fix:
+
+1. **Verify file location**:
+   - Files MUST be at: `config/custom_components/space_weather/`
+   - Use File Editor or SSH to check
+   - You should see these 4 files in that folder:
+     - `__init__.py`
+     - `sensor.py`
+     - `manifest.json`
+     - `const.py`
+
+2. **If using HACS**:
+   - Go to HACS → Integrations
+   - Find "NOAA Space Weather"
+   - Make sure it shows "Installed" (not just added to custom repositories)
+   - If not installed, click it and click "Install"
+   - Restart Home Assistant
+
+3. **If manually installed**:
+   - Download from GitHub: `https://github.com/BojanKV/ha-noaa-space-weather`
+   - Extract the ZIP
+   - Copy `custom_components/space_weather/` to your Home Assistant `config/custom_components/` directory
+   - Final structure: `config/custom_components/space_weather/` with the 4 files inside
+   - Restart Home Assistant
+
+4. **After fixing**:
+   - Remove the `platform: space_weather` from `configuration.yaml` temporarily
+   - Restart Home Assistant
+   - Check that the error is gone
+   - Add back the configuration and restart again
 
 ### "I only see an update string saying it's up-to-date"
 

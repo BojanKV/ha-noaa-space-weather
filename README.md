@@ -29,10 +29,15 @@ This component has been streamlined for easy deployment. **No external services,
 
 ### Option 2: Manual Installation
 
-1. Copy the `custom_components/space_weather` folder from this repository to your Home Assistant `config/custom_components` directory
+1. Download this repository:
+   - Click the green "Code" button → "Download ZIP"
+   - Extract the ZIP file
+2. Copy the `custom_components/space_weather` folder from the extracted repository to your Home Assistant `config/custom_components` directory
+   - **Important**: Copy the entire `space_weather` folder (not just the files inside)
    - Final path should be: `config/custom_components/space_weather/`
-2. Restart Home Assistant
-3. Add to your `configuration.yaml` (see Configuration section below)
+   - Inside that folder you should have: `__init__.py`, `sensor.py`, `manifest.json`, `const.py`
+3. Restart Home Assistant
+4. Add to your `configuration.yaml` (see Configuration section below)
 
 ## ⚙️ Configuration
 
@@ -217,6 +222,50 @@ This is a common issue! The integration creates **multiple individual sensors**,
    - Add these sensors to your dashboard using an Entities card or custom cards
 3. **Use the custom cards** for the best experience (see Dashboard Cards section)
 4. **Example:** Instead of looking for one "space weather" entity, you should see separate entities for K-Index, each scale, predictions, etc.
+
+### "Platform error: sensor - Integration 'space_weather' not found"
+
+This error means Home Assistant cannot find the integration files. **This happens before sensors are created.**
+
+**Fix this by verifying file locations:**
+
+1. **Check file location** (most common issue):
+   - Files MUST be at: `config/custom_components/space_weather/`
+   - NOT at: `config/space_weather/` or `custom_components/` directly
+   - Required files inside the folder:
+     - `__init__.py`
+     - `sensor.py`
+     - `manifest.json`
+     - `const.py`
+
+2. **Verify using File Editor or SSH**:
+   ```bash
+   # From your config directory
+   ls -la custom_components/space_weather/
+   ```
+   You should see the 4 files listed above.
+
+3. **If using HACS**:
+   - Make sure you clicked "Install" (not just added the repository)
+   - Check HACS → Integrations → NOAA Space Weather shows as "Installed"
+   - After install, restart Home Assistant
+
+4. **If manually installed**:
+   - Re-download from GitHub
+   - Copy the entire `custom_components/space_weather` folder
+   - Ensure you're copying TO your Home Assistant config directory
+   - Common mistake: copying files but not preserving the folder structure
+
+5. **After fixing file location**:
+   - Restart Home Assistant completely (not just reload)
+   - The error should disappear
+   - Check logs for: `GloTEC sensor not configured` (confirms it loaded)
+
+**Still getting the error?**
+- Check file permissions (files must be readable by Home Assistant)
+- Verify you're editing the correct `configuration.yaml` file
+- Try removing and re-adding the configuration
+- Check for typos: it's `platform: space_weather` (with underscore, not hyphen)
 
 ### "I only see an update item/entity when searching"
 
