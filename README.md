@@ -218,6 +218,41 @@ This is a common issue! The integration creates **multiple individual sensors**,
 3. **Use the custom cards** for the best experience (see Dashboard Cards section)
 4. **Example:** Instead of looking for one "space weather" entity, you should see separate entities for K-Index, each scale, predictions, etc.
 
+### "I only see an update item/entity when searching"
+
+If you search for `space_weather` and only see one "update" entity (not 18+ sensors):
+
+**Common Causes:**
+
+1. **Wrong search syntax in States**: 
+   - ❌ Don't search for `sensor:space_weather` or `sensor.space_weather`
+   - ✅ Search for just `space_weather` (no prefix)
+   - The filter box searches entity IDs and names
+
+2. **Configuration not added to `configuration.yaml`**:
+   - The integration files must be in `custom_components/space_weather/`
+   - **AND** you must add this to `configuration.yaml`:
+     ```yaml
+     sensor:
+       - platform: space_weather
+     ```
+   - Without the `configuration.yaml` entry, no sensors will be created
+
+3. **Check logs for errors**:
+   - Go to Settings → System → Logs
+   - Search for "space_weather" or "sensor"
+   - Look for error messages about the platform or sensors
+
+4. **Verify files are in the correct location**:
+   - Files should be at: `config/custom_components/space_weather/`
+   - Required files: `__init__.py`, `sensor.py`, `manifest.json`
+
+**To verify it's working:**
+- After restart, check logs for: `"GloTEC sensor not configured"` or `"GloTEC sensor enabled"`
+- This confirms the integration is loading
+- Then wait 1-2 minutes for sensors to fetch initial data
+- Search Developer Tools → States for `space_weather` (you should see 18+ entities)
+
 ### "No sensors appearing after installation"
 
 1. **Check that you restarted** Home Assistant after adding the configuration
@@ -228,7 +263,7 @@ This is a common issue! The integration creates **multiple individual sensors**,
    ```
 3. **Check the logs**: Settings → System → Logs, search for "space_weather"
 4. **Wait a few minutes** - sensors need time to fetch initial data from NOAA
-5. **Verify entity IDs**: Go to Developer Tools → States and search for `space_weather`
+5. **Verify entity IDs**: Go to Developer Tools → States and search for `space_weather` (no prefix)
 
 ### "Configuration errors or sensor not loading"
 

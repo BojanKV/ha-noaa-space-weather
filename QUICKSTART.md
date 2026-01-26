@@ -193,9 +193,38 @@ sensor:
 
 **Solution:**
 1. Go to **Developer Tools → States**
-2. Search for `space_weather` - you should see 18+ sensors
-3. Add these sensors to your dashboard (see "Viewing Your Data" above)
-4. Each sensor shows different information (K-Index, scales, predictions, etc.)
+2. Search for just `space_weather` (no `sensor:` or `sensor.` prefix)
+3. You should see 18+ sensors
+4. Add these sensors to your dashboard (see "Viewing Your Data" above)
+5. Each sensor shows different information (K-Index, scales, predictions, etc.)
+
+### "I only see one update/sensor item"
+
+If you only see one item when searching:
+
+**Most Common Issue: Missing Configuration**
+
+The integration requires configuration in `configuration.yaml`:
+
+```yaml
+sensor:
+  - platform: space_weather
+```
+
+**Steps to fix:**
+1. ✅ Verify files are in `config/custom_components/space_weather/`
+2. ✅ Add the configuration above to `configuration.yaml`
+3. ✅ Check configuration: Settings → System → Check configuration
+4. ✅ Restart Home Assistant
+5. ✅ Wait 2-3 minutes
+6. ✅ Search Developer Tools → States for `space_weather` (no prefix)
+7. ✅ Look in logs (Settings → System → Logs) for "space_weather"
+
+**Expected log message after restart:**
+- "GloTEC sensor not configured" (if no lat/lon in config)
+- OR "GloTEC sensor enabled" (if lat/lon configured)
+
+This confirms the integration loaded. If you don't see this, the configuration isn't being read.
 
 ### No sensors appearing
 
