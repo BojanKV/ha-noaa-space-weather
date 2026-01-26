@@ -32,7 +32,7 @@ This component has been streamlined for easy deployment. **No external services,
 1. Download this repository:
    - Click the green "Code" button → "Download ZIP"
    - Extract the ZIP file
-2. Copy the `custom_components/space_weather` folder from the extracted repository to your Home Assistant `config/custom_components` directory
+2. Copy the `custom_components/space_weather` folder from the extracted ZIP file to your Home Assistant `config/custom_components` directory
    - **Important**: Copy the entire `space_weather` folder (not just the files inside)
    - Final path should be: `config/custom_components/space_weather/`
    - Inside that folder you should have: `__init__.py`, `sensor.py`, `manifest.json`, `const.py`
