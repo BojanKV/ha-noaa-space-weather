@@ -67,6 +67,97 @@ sensor:
 
 After adding the configuration, restart Home Assistant.
 
+## 👁️ Viewing Your Data
+
+After installation and restart, the integration creates multiple sensors. Here's how to view them:
+
+### Finding Your Sensors
+
+1. Go to **Developer Tools** > **States** in Home Assistant
+2. Search for `sensor.space_weather` to see all available sensors
+3. You should see entities like:
+   - `sensor.space_weather_scale_r`
+   - `sensor.space_weather_scale_s`
+   - `sensor.space_weather_scale_g`
+   - `sensor.space_weather_planetary_k_index`
+   - `sensor.space_weather_proton_flux_10_mev`
+   - And many more (see complete list below)
+
+### Adding Sensors to Your Dashboard
+
+**Option 1: Using Built-in Cards**
+
+1. Edit your dashboard
+2. Click **Add Card**
+3. Select **Entities** card
+4. Add the sensors you want to display
+
+Example configuration:
+```yaml
+type: entities
+entities:
+  - entity: sensor.space_weather_scale_r
+    name: Radio Blackouts
+  - entity: sensor.space_weather_scale_s
+    name: Solar Radiation
+  - entity: sensor.space_weather_scale_g
+    name: Geomagnetic Storms
+  - entity: sensor.space_weather_planetary_k_index
+    name: K-Index
+  - entity: sensor.space_weather_proton_flux_10_mev
+    name: Proton Flux
+  - entity: sensor.space_weather_aurora_forecast_coverage
+    name: Aurora Coverage
+```
+
+**Option 2: Using Custom Cards** (Recommended for better visualization)
+
+See the [Dashboard Cards](#-dashboard-cards) section below for custom Lovelace cards.
+
+### Complete Sensor List
+
+All available sensor entity IDs:
+
+**Current Scales:**
+- `sensor.space_weather_scale_r` - Radio Blackouts (current)
+- `sensor.space_weather_scale_s` - Solar Radiation Storms (current)
+- `sensor.space_weather_scale_g` - Geomagnetic Storms (current)
+
+**24-hour Maximum Scales:**
+- `sensor.space_weather_scale_r_24hr_max`
+- `sensor.space_weather_scale_s_24hr_max`
+- `sensor.space_weather_scale_g_24hr_max`
+
+**Predictions (Today):**
+- `sensor.space_weather_prediction_r_minorprob_today`
+- `sensor.space_weather_prediction_r_majorprob_today`
+- `sensor.space_weather_prediction_s_scale_today`
+- `sensor.space_weather_prediction_s_prob_today`
+- `sensor.space_weather_prediction_g_scale_today`
+
+**Predictions (1-Day Forecast):**
+- `sensor.space_weather_prediction_r_minorprob_1day`
+- `sensor.space_weather_prediction_r_majorprob_1day`
+- `sensor.space_weather_prediction_s_scale_1day`
+- `sensor.space_weather_prediction_s_prob_1day`
+- `sensor.space_weather_prediction_g_scale_1day`
+
+**Predictions (2-Day Forecast):**
+- `sensor.space_weather_prediction_r_minorprob_2day`
+- `sensor.space_weather_prediction_r_majorprob_2day`
+- `sensor.space_weather_prediction_s_scale_2day`
+- `sensor.space_weather_prediction_s_prob_2day`
+- `sensor.space_weather_prediction_g_scale_2day`
+
+**Real-time Data:**
+- `sensor.space_weather_planetary_k_index` - Updated every 5 minutes
+- `sensor.space_weather_proton_flux_10_mev`
+- `sensor.space_weather_proton_flux_10_mev_warning_threshold`
+- `sensor.space_weather_aurora_forecast_coverage`
+
+**Regional Data (if configured):**
+- `sensor.space_weather_glotec` - Total Electron Content for your region
+
 ## 📊 Available Sensors
 
 The integration provides the following sensors:
@@ -111,6 +202,54 @@ Custom Lovelace cards are available in the `dashboard/www` folder.
    ```
 
 See `dashboard/README.md` for more details.
+
+## 🔧 Troubleshooting
+
+### "I only see 'up-to-date' or a status string, not the actual data"
+
+This is a common issue! The integration creates **sensors**, not a single status entity. After installation:
+
+1. **Don't add the integration as a single entity** - it doesn't work that way
+2. **Add individual sensors** to your dashboard:
+   - Go to **Developer Tools** > **States**
+   - Search for `space_weather`
+   - You'll see 18+ individual sensors (or 19+ if GloTEC is enabled)
+   - Add these sensors to your dashboard using an Entities card or custom cards
+3. **Use the custom cards** for the best experience (see Dashboard Cards section)
+4. **Example:** Instead of looking for one "space weather" entity, you should see separate entities for K-Index, each scale, predictions, etc.
+
+### "No sensors appearing after installation"
+
+1. **Check that you restarted** Home Assistant after adding the configuration
+2. **Verify configuration** is correct in `configuration.yaml`:
+   ```yaml
+   sensor:
+     - platform: space_weather
+   ```
+3. **Check the logs**: Settings → System → Logs, search for "space_weather"
+4. **Wait a few minutes** - sensors need time to fetch initial data from NOAA
+5. **Verify entity IDs**: Go to Developer Tools → States and search for `space_weather`
+
+### "Configuration errors or sensor not loading"
+
+- Ensure proper YAML indentation (use spaces, not tabs)
+- Make sure the `sensor:` section in `configuration.yaml` is properly formatted
+- For GloTEC: verify lat/lon coordinates are valid (-90 to 90 for lat, -180 to 180 for lon)
+- Run **Check Configuration** before restarting: Settings → System → Check configuration
+
+### "Sensors show 'Unknown' or 'Unavailable'"
+
+- Check your internet connection - data comes from NOAA servers
+- Wait for the next update cycle (sensors update every 5 minutes)
+- Check Home Assistant logs for specific error messages
+- Verify NOAA services are operational: https://www.swpc.noaa.gov/
+
+### "GloTEC sensor not showing up"
+
+- Ensure you've added the lat/lon configuration parameters (see Configuration section)
+- Check that your coordinates are valid and in the correct format
+- Verify you've restarted Home Assistant after adding the configuration
+- Check logs for any GloTEC-specific errors
 
 ## 🔗 Related Projects
 

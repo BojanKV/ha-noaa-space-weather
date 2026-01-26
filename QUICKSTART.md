@@ -44,6 +44,92 @@ HACS is the Home Assistant Community Store - like an app store for Home Assistan
 
 **Done!** Your sensors will appear as `sensor.space_weather_*`
 
+## ✅ Verify Installation Worked
+
+After restarting Home Assistant:
+
+1. **Go to Developer Tools → States**
+2. **Search for** `space_weather`
+3. **You should see multiple sensors** (at least 18):
+   - `sensor.space_weather_scale_r`
+   - `sensor.space_weather_scale_s`
+   - `sensor.space_weather_scale_g`
+   - `sensor.space_weather_planetary_k_index`
+   - `sensor.space_weather_proton_flux_10_mev`
+   - And many more...
+
+**If you don't see any sensors:**
+- Wait 2-3 minutes and refresh the page
+- Check Settings → System → Logs for errors containing "space_weather"
+- Verify your `configuration.yaml` syntax (Settings → System → Check configuration)
+
+## 📊 Viewing Your Data
+
+Now that the sensors are installed, you need to add them to your dashboard:
+
+### Quick Method: Add to Overview Dashboard
+
+1. **Edit your dashboard** (click the pencil icon)
+2. **Click "Add Card"**
+3. **Select "Entities"** card type
+4. **Click "Choose Entity"** and search for `space_weather`
+5. **Add the sensors you want**, for example:
+   ```yaml
+   type: entities
+   entities:
+     - entity: sensor.space_weather_scale_r
+       name: Radio Blackouts (R-Scale)
+     - entity: sensor.space_weather_scale_s
+       name: Solar Radiation (S-Scale)
+     - entity: sensor.space_weather_scale_g
+       name: Geomagnetic Storms (G-Scale)
+     - entity: sensor.space_weather_planetary_k_index
+       name: Planetary K-Index
+     - entity: sensor.space_weather_proton_flux_10_mev
+       name: Proton Flux
+     - entity: sensor.space_weather_aurora_forecast_coverage
+       name: Aurora Coverage
+   ```
+6. **Save** the card
+
+### Better Method: Custom Cards (Recommended)
+
+For a nicer visualization like the example screenshot in the README:
+
+1. **Copy custom card files:**
+   - From this repo's `dashboard/www/` folder
+   - To your Home Assistant `config/www/` folder
+
+2. **Add resources to your dashboard:**
+   - Dashboard → Edit → ⋮ → **Manage resources**
+   - Add these three resources:
+     ```
+     /local/space-weather-card.js
+     /local/space-weather-24hr-max-card.js
+     /local/space-weather-pred-card.js
+     ```
+
+3. **Add the custom cards:**
+   - Dashboard → Edit → **Add Card** → **Manual**
+   - Use these card configurations:
+   
+   **Current Scales Card:**
+   ```yaml
+   type: custom:space-weather-current
+   ```
+   
+   **24-Hour Max Card:**
+   ```yaml
+   type: custom:space-weather-24hr-max
+   ```
+   
+   **Prediction Card:**
+   ```yaml
+   type: custom:space-weather-prediction
+   ```
+
+See the complete example in `dashboard/example-dashboard.yml`
+
 ### 📦 Method 2: Manual Installation
 
 **Step 1:** Download the code
@@ -97,6 +183,23 @@ sensor:
 **Example regions** are in `configuration.example.yaml`
 
 ## Troubleshooting
+
+### "I only see an update string saying it's up-to-date"
+
+**This is the most common issue!** The integration creates **individual sensors**, not a single status message.
+
+❌ **Wrong:** Looking for one "space weather" entity that shows everything  
+✅ **Right:** Multiple `sensor.space_weather_*` entities, each showing different data
+
+**Solution:**
+1. Go to **Developer Tools → States**
+2. Search for `space_weather` - you should see 18+ sensors
+3. Add these sensors to your dashboard (see "Viewing Your Data" above)
+4. Each sensor shows different information (K-Index, scales, predictions, etc.)
+
+### No sensors appearing
+
+**Check these in order:**
 
 ### "Component not found"
 - Make sure you restarted Home Assistant after installation

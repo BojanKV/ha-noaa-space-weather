@@ -1,6 +1,16 @@
 # Example Home Assistant configuration for NOAA Space Weather integration
 #
 # Copy the relevant section to your configuration.yaml file
+# After adding configuration and restarting, sensors will be available as:
+# - sensor.space_weather_scale_r
+# - sensor.space_weather_scale_s
+# - sensor.space_weather_scale_g
+# - sensor.space_weather_planetary_k_index
+# - sensor.space_weather_proton_flux_10_mev
+# - And many more...
+#
+# To view all sensors: Developer Tools > States > search for "space_weather"
+# To add to dashboard: See README.md "Viewing Your Data" section
 #
 
 # ========================================
