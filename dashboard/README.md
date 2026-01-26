@@ -152,7 +152,7 @@ To display a visual map of GloTEC (Total Electron Content) data:
      - platform: generic
        name: GloTEC Map
        still_image_url: https://services.swpc.noaa.gov/images/animations/glotec/100asm_urt/latest.png
-       framerate: 0.00166  # Updates every 10 minutes
+       framerate: 0.00166  # 1/600 = updates approximately every 10 minutes
    ```
 
 2. Restart Home Assistant

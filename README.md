@@ -207,9 +207,9 @@ See `dashboard/README.md` for more details.
 
 ### "I only see 'up-to-date' or a status string, not the actual data"
 
-This is a common issue! The integration creates **sensors**, not a single status entity. After installation:
+This is a common issue! The integration creates **multiple individual sensors**, not a single status entity. After installation:
 
-1. **Don't add the integration as a single entity** - it doesn't work that way
+1. **Don't look for one "space weather" entity** - the integration provides 18+ separate sensors
 2. **Add individual sensors** to your dashboard:
    - Go to **Developer Tools** > **States**
    - Search for `space_weather`
