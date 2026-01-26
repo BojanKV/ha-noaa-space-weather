@@ -54,8 +54,7 @@ HACS is the Home Assistant Community Store - like an app store for Home Assistan
 **Step 2:** Copy files
 1. Find your Home Assistant configuration folder (usually `/config/`)
 2. Create a folder called `custom_components` if it doesn't exist
-3. Create a `space_weather` folder inside `custom_components`
-4. Copy the integration files (`__init__.py`, `const.py`, `manifest.json`, `sensor.py`) from the repository root to `config/custom_components/space_weather/`
+3. Copy the entire `custom_components/space_weather` folder from the repository to your Home Assistant `config/custom_components/` directory
    - Final path: `config/custom_components/space_weather/`
 
 **Step 3:** Configure it (same as HACS method above)
